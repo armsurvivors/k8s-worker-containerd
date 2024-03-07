@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.21.7"
+ARG GOLANG_VERSION="1.21.8"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -46,7 +46,7 @@ RUN BUILDTAGS=no_btrfs make
 # Build nerdctl from source 
 FROM build as nerdctl
 WORKDIR /src
-ARG NERDCTL_VERSION="v1.7.3"
+ARG NERDCTL_VERSION="v1.7.4"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
 WORKDIR /src/nerdctl
 RUN make
@@ -72,7 +72,7 @@ RUN ls -laR /src/cri-tools/build/bin/linux/${OS_ARCH}
 # Build cfssl from source 
 FROM build as cfssl
 WORKDIR /src
-ARG CFSSL_VERSION="v1.6.4"
+ARG CFSSL_VERSION="v1.6.5"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CFSSL_VERSION} https://github.com/cloudflare/cfssl /src/cfssl
 WORKDIR /src/cfssl
 RUN make
