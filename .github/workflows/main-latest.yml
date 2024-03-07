@@ -21,6 +21,7 @@ jobs:
   # If on thin LVM: 
   #   THIN_POOL="thinvg" SIZE=100G LABEL=build_others MOUNT_POINT=/opt/build_others lvm_thin_ext4_prepare
   # GH_RUNNER_USER="ghrunnerk8scontainerd" BASE_DIR="/opt/build_others" GH_OWNER_REPO="rpardini/k8s-worker-containerd" setup_github_runner
+  # GH_RUNNER_USER="ghrunnerarmsurvivors" BASE_DIR="/opt/build_armsurvivors" GH_OWNER_REPO="armsurvivors" setup_github_runner
 
   build:
     needs: [ prepare ]
