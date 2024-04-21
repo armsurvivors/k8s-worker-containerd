@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.21.8"
+ARG GOLANG_VERSION="1.21.9"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -37,7 +37,7 @@ RUN make
 # Build containerd from source
 FROM build as containerd
 WORKDIR /src
-ARG CONTAINERD_VERSION="v1.7.13"
+ARG CONTAINERD_VERSION="v1.7.15"
 # When changing above, also change the version in the debian/control file
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONTAINERD_VERSION} https://github.com/containerd/containerd /src/containerd
 WORKDIR /src/containerd
@@ -46,7 +46,7 @@ RUN BUILDTAGS=no_btrfs make
 # Build nerdctl from source 
 FROM build as nerdctl
 WORKDIR /src
-ARG NERDCTL_VERSION="v1.7.4"
+ARG NERDCTL_VERSION="v1.7.5"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
 WORKDIR /src/nerdctl
 RUN make
@@ -62,7 +62,7 @@ RUN make
 # Build cri-tools from source
 FROM build as cri-tools
 WORKDIR /src
-ARG CRI_TOOLS_VERSION="v1.29.0" 
+ARG CRI_TOOLS_VERSION="v1.30.0" 
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CRI_TOOLS_VERSION} https://github.com/kubernetes-sigs/cri-tools /src/cri-tools
 WORKDIR /src/cri-tools
 RUN make
