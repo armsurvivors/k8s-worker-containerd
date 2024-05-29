@@ -79,7 +79,7 @@ jobs:
 
   release:
     needs: [ prepare, build ] # depend on the previous jobs...
-    if: "${{ always() }}" # ... but run even if (some of) them failed.
+    #if: "${{ always() }}" # ... but run even if (some of) them failed.
     runs-on: ubuntu-latest
     steps:
       # Download the built artifacts from GH artifacts.  
