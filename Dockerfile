@@ -26,13 +26,13 @@ RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=$
 WORKDIR /src/runc
 RUN make
 
-# Build conmon from source
-FROM build as conmon
-WORKDIR /src
-ARG CONMON_VERSION="v2.1.12"
-RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONMON_VERSION} https://github.com/containers/conmon.git /src/conmon
-WORKDIR /src/conmon
-RUN make
+## # Build conmon from source
+## FROM build as conmon
+## WORKDIR /src
+## ARG CONMON_VERSION="v2.1.12"
+## RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONMON_VERSION} https://github.com/containers/conmon.git /src/conmon
+## WORKDIR /src/conmon
+## RUN make
 
 # Build containerd from source
 FROM build as containerd
@@ -87,7 +87,7 @@ COPY --from=cri-tools /src/cri-tools/build/bin/linux/${OS_ARCH}/crictl crictl-la
 COPY --from=cri-tools /src/cri-tools/build/bin/linux/${OS_ARCH}/critest .
 COPY --from=containerd /src/containerd/bin/* .
 #COPY --from=podman /src/podman/bin/podman .
-COPY --from=conmon /src/conmon/bin/conmon .
+#COPY --from=conmon /src/conmon/bin/conmon .
 COPY --from=cfssl /src/cfssl/bin/cfssl .
 COPY --from=cfssl /src/cfssl/bin/cfssljson .
 COPY --from=nerdctl /src/nerdctl/_output/nerdctl .
@@ -134,7 +134,7 @@ RUN containerd --version
 RUN crictl-latest --version # Real bin
 RUN crictl --version # symlink in usr/local/bin
 #RUN podman --version
-RUN conmon --version
+#RUN conmon --version
 RUN cfssl version
 RUN cfssljson --version
 RUN nerdctl --version
