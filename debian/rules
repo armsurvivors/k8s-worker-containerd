@@ -6,7 +6,7 @@
 export DEB_BUILD_OPTIONS=nostrip
 
 %:
-	dh $@
+	dh --with=single-binary $@
 
 
 override_dh_installsystemd:
