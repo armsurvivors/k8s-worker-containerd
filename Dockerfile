@@ -8,7 +8,7 @@ ARG GOLANG_VERSION="1.24.2"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
 RUN apt-get -y dist-upgrade
-RUN apt-get -y install git bash wget curl build-essential devscripts debhelper libseccomp-dev libapparmor-dev libassuan-dev libbtrfs-dev libc6-dev libdevmapper-dev libglib2.0-dev libgpgme-dev libgpg-error-dev libprotobuf-dev libprotobuf-c-dev libseccomp-dev libselinux1-dev libsystemd-dev pkg-config binutils
+RUN apt-get -y install git bash wget curl build-essential devscripts debhelper libseccomp-dev libapparmor-dev libassuan-dev libbtrfs-dev libc6-dev libdevmapper-dev libglib2.0-dev libgpgme-dev libgpg-error-dev libprotobuf-dev libprotobuf-c-dev libseccomp-dev libselinux1-dev libsystemd-dev pkg-config binutils-gold
 SHELL ["/bin/bash", "-e", "-c"]
 
 RUN wget --progress=dot:giga -O "/tmp/go.tgz" https://go.dev/dl/go${GOLANG_VERSION}.linux-${OS_ARCH}.tar.gz
