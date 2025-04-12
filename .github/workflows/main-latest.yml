@@ -30,7 +30,7 @@ jobs:
       fail-fast: false # let other jobs try to complete if one fails
       matrix:
         arch: [ { name: 'amd64', runner: 'ubuntu-latest' } , { name: 'arm64', runner: 'ubuntu-24.04-arm' } ]
-        distro: [ 'ubuntu:noble', 'debian:bookworm', 'debian:trixie' ]
+        distro: [ { id: "noble", image: 'ubuntu:noble' }, { id:"bookworm", image: 'debian:bookworm' }, { id: "trixie", image: 'debian:trixie' } ]
     steps:
 
       - name: Checkout
@@ -43,7 +43,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build ${{ matrix.arch.name }} ${{ matrix.distro }}
+      - name: Build ${{ matrix.arch.name }} ${{ matrix.distro.image }}
         uses: docker/build-push-action@v6
         timeout-minutes: 180
         with:
@@ -54,26 +54,26 @@ jobs:
           pull: true # bring in updated versions of preexisting GH images
           push: false
           tags: k8s-worker-containerd:${{ matrix.arch.name }}
-          cache-from: type=gha,scope=${{ matrix.arch.name }}_${{ matrix.distro }}
-          cache-to: type=gha,scope=${{ matrix.arch.name }}_${{ matrix.distro }}
+          cache-from: type=gha,scope=${{ matrix.arch.name }}_${{ matrix.distro.image }}
+          cache-to: type=gha,scope=${{ matrix.arch.name }}_${{ matrix.distro.image }}
           build-args: |
             PACKAGE_VERSION=${{needs.prepare.outputs.created}}
-            BASE_IMAGE=${{ matrix.distro }}
+            BASE_IMAGE=${{ matrix.distro.image }}
             OS_ARCH=${{ matrix.arch.name }}
 
-      - name: Extract artifacts from docker ${{ matrix.arch.name }} ${{ matrix.distro }}
+      - name: Extract artifacts from docker ${{ matrix.arch.name }} ${{ matrix.distro.image }}
         run: docker cp $(docker create --rm k8s-worker-containerd:${{ matrix.arch.name }}):/out ./
 
-      - name: Upload deb as artifact ${{ matrix.arch.name }} ${{ matrix.distro }}
+      - name: Upload deb as artifact ${{ matrix.arch.name }} ${{ matrix.distro.id }}
         uses: actions/upload-artifact@v4
         with:
-          name: deb-${{ matrix.arch.name }}-${{ matrix.distro }}
+          name: deb-${{ matrix.arch.name }}-${{ matrix.distro.id }}
           path: out/*.deb
 
-      - name: Upload tarball as artifact ${{ matrix.arch.name }} ${{ matrix.distro }}
+      - name: Upload tarball as artifact ${{ matrix.arch.name }} ${{ matrix.distro.id }}
         uses: actions/upload-artifact@v4
         with:
-          name: tarball-${{ matrix.arch.name }}-${{ matrix.distro }}
+          name: tarball-${{ matrix.arch.name }}-${{ matrix.distro.id }}
           path: out/*.tar.gz
 
 
