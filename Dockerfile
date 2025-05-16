@@ -41,7 +41,7 @@ ARG CONTAINERD_VERSION="v1.7.27"
 # When changing above, also change the version in the debian/control file
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONTAINERD_VERSION} https://github.com/containerd/containerd /src/containerd
 WORKDIR /src/containerd
-RUN BUILDTAGS=no_btrfs make
+RUN BUILDTAGS=no_btrfs GODEBUG=yes make
 
 # Build nerdctl from source 
 FROM build as nerdctl
@@ -92,6 +92,10 @@ COPY --from=cfssl /src/cfssl/bin/cfssl .
 COPY --from=cfssl /src/cfssl/bin/cfssljson .
 COPY --from=nerdctl /src/nerdctl/_output/nerdctl .
 
+# Lets check the binaries for stripedness
+RUN file /out/usr/sbin/runc
+RUN file /out/usr/bin/containerd
+
 # add podman default configs
 #WORKDIR /out/etc/containers
 #RUN curl -L -o /out/etc/containers/registries.conf https://src.fedoraproject.org/rpms/containers-common/raw/main/f/registries.conf
@@ -141,6 +145,11 @@ RUN nerdctl --version
 RUN dpkg -L k8s-worker-containerd
 
 RUN lsb_release -a
+
+# Lets check the (through apt-installed) binaries for stripedness
+RUN file /usr/sbin/runc
+RUN file /usr/bin/containerd
+
 
 # Now prepare the real output: a tarball of /out, and the .deb for this arch.
 WORKDIR /artifacts
