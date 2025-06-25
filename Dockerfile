@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.24.3"
+ARG GOLANG_VERSION="1.24.4"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -37,7 +37,7 @@ RUN make
 # Build containerd from source
 FROM build as containerd
 WORKDIR /src
-ARG CONTAINERD_VERSION="v2.1.1"
+ARG CONTAINERD_VERSION="v2.1.3"
 # When changing above, also change the version in the debian/control file
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONTAINERD_VERSION} https://github.com/containerd/containerd /src/containerd
 WORKDIR /src/containerd
