@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.24.4"
+ARG GOLANG_VERSION="1.24.5"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -46,7 +46,7 @@ RUN BUILDTAGS=no_btrfs GODEBUG=yes make
 # Build nerdctl from source 
 FROM build as nerdctl
 WORKDIR /src
-ARG NERDCTL_VERSION="v2.1.2"
+ARG NERDCTL_VERSION="v2.1.3"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
 WORKDIR /src/nerdctl
 RUN make
