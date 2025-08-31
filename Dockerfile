@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.24.5"
+ARG GOLANG_VERSION="1.24.6"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
