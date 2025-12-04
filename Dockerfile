@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} as build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.24.10"
+ARG GOLANG_VERSION="1.24.11"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -21,7 +21,7 @@ RUN go version
 # Build runc from source
 FROM build as runc
 WORKDIR /src
-ARG RUNC_VERSION="v1.3.3"
+ARG RUNC_VERSION="v1.3.4"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${RUNC_VERSION} https://github.com/opencontainers/runc /src/runc
 WORKDIR /src/runc
 RUN make
