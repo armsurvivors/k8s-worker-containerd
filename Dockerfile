@@ -1,5 +1,5 @@
 ARG BASE_IMAGE="debian:bookworm"
-FROM ${BASE_IMAGE} as build
+FROM ${BASE_IMAGE} AS build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
@@ -19,7 +19,7 @@ RUN go version
 # See https://github.com/kelseyhightower/kubernetes-the-hard-way/blob/79a3f79b27bd28f82f071bb877a266c2e62ee506/docs/09-bootstrapping-kubernetes-workers.md#download-and-install-worker-binaries
 
 # Build runc from source
-FROM build as runc
+FROM build AS runc
 WORKDIR /src
 ARG RUNC_VERSION="v1.3.4"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${RUNC_VERSION} https://github.com/opencontainers/runc /src/runc
@@ -27,7 +27,7 @@ WORKDIR /src/runc
 RUN make
 
 ## # Build conmon from source
-## FROM build as conmon
+## FROM build AS conmon
 ## WORKDIR /src
 ## ARG CONMON_VERSION="v2.1.12"
 ## RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CONMON_VERSION} https://github.com/containers/conmon.git /src/conmon
@@ -35,7 +35,7 @@ RUN make
 ## RUN make
 
 # Build containerd from source
-FROM build as containerd
+FROM build AS containerd
 WORKDIR /src
 ARG CONTAINERD_VERSION="v2.2.0"
 # When changing above, also change the version in the debian/control file
@@ -44,7 +44,7 @@ WORKDIR /src/containerd
 RUN BUILDTAGS=no_btrfs GODEBUG=yes make
 
 # Build nerdctl from source
-FROM build as nerdctl
+FROM build AS nerdctl
 WORKDIR /src
 ARG NERDCTL_VERSION="v2.2.0"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
@@ -52,7 +52,7 @@ WORKDIR /src/nerdctl
 RUN make
 
 ## # Build podman from source.
-## FROM build as podman
+## FROM build AS podman
 ## WORKDIR /src
 ## ARG PODMAN_VERSION="v4.8.2"
 ## RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${PODMAN_VERSION} https://github.com/containers/podman.git /src/podman
@@ -60,7 +60,7 @@ RUN make
 ## RUN make BUILDTAGS="selinux seccomp systemd"
 
 # Build cri-tools from source
-FROM build as cri-tools
+FROM build AS cri-tools
 WORKDIR /src
 ARG CRI_TOOLS_VERSION="v1.34.0"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CRI_TOOLS_VERSION} https://github.com/kubernetes-sigs/cri-tools /src/cri-tools
@@ -70,7 +70,7 @@ RUN ls -laR /src/cri-tools/build/bin/linux/${OS_ARCH}
 
 
 # Build cfssl from source
-FROM build as cfssl
+FROM build AS cfssl
 WORKDIR /src
 ARG CFSSL_VERSION="v1.6.5"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CFSSL_VERSION} https://github.com/cloudflare/cfssl /src/cfssl
@@ -78,7 +78,7 @@ WORKDIR /src/cfssl
 RUN make
 
 # Prepare the results in /out
-FROM build as packager
+FROM build AS packager
 WORKDIR /out/usr/sbin
 COPY --from=runc /src/runc/runc .
 
