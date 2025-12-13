@@ -21,7 +21,7 @@ RUN go version
 # Build runc from source
 FROM build AS runc
 WORKDIR /src
-ARG RUNC_VERSION="v1.3.4"
+ARG RUNC_VERSION="v1.4.0"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${RUNC_VERSION} https://github.com/opencontainers/runc /src/runc
 WORKDIR /src/runc
 RUN make
