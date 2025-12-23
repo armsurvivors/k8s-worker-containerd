@@ -21,7 +21,7 @@ RUN go version
 # Build runc from source
 FROM build AS runc
 WORKDIR /src
-ARG RUNC_VERSION="v1.4.0"
+ARG RUNC_VERSION="v1.3.4"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${RUNC_VERSION} https://github.com/opencontainers/runc /src/runc
 WORKDIR /src/runc
 RUN make
@@ -37,19 +37,19 @@ RUN make
 # Build containerd from source
 FROM build AS containerd
 WORKDIR /src
-ARG CONTAINERD_VERSION="main"
-# Clone from upstream main.
+ARG CONTAINERD_VERSION="v2.2.1"
+# Clone from upstream
 RUN git -c advice.detachedHead=false clone --branch=${CONTAINERD_VERSION} https://github.com/containerd/containerd /src/containerd
 WORKDIR /src/containerd
 RUN git remote add rpardini https://github.com/rpardini/containerd.git && git fetch rpardini
-RUN git -c user.email="ricardo@pardini.net" -c user.name="Ricardo Pardini" cherry-pick 882150d0acc584b68204f3ef3d2c11479ae81cf0
+RUN git -c user.email="ricardo@pardini.net" -c user.name="Ricardo Pardini" cherry-pick 36614f79241cde4e24e6e35dd229c775a791e577
 # Build it
 RUN BUILDTAGS=no_btrfs GODEBUG=yes make
 
 # Build nerdctl from source
 FROM build AS nerdctl
 WORKDIR /src
-ARG NERDCTL_VERSION="v2.2.0"
+ARG NERDCTL_VERSION="v2.2.1"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
 WORKDIR /src/nerdctl
 RUN make
