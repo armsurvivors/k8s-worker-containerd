@@ -3,7 +3,7 @@ FROM ${BASE_IMAGE} AS build
 
 ARG OS_ARCH="amd64"
 # See https://go.dev/dl/
-ARG GOLANG_VERSION="1.24.11"
+ARG GOLANG_VERSION="1.26.4"
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update
@@ -21,7 +21,7 @@ RUN go version
 # Build runc from source
 FROM build AS runc
 WORKDIR /src
-ARG RUNC_VERSION="v1.3.4"
+ARG RUNC_VERSION="v1.4.3"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${RUNC_VERSION} https://github.com/opencontainers/runc /src/runc
 WORKDIR /src/runc
 RUN make
@@ -37,19 +37,19 @@ RUN make
 # Build containerd from source
 FROM build AS containerd
 WORKDIR /src
-ARG CONTAINERD_VERSION="v2.2.1"
+ARG CONTAINERD_VERSION="v2.3.1"
 # Clone from upstream
 RUN git -c advice.detachedHead=false clone --branch=${CONTAINERD_VERSION} https://github.com/containerd/containerd /src/containerd
 WORKDIR /src/containerd
 RUN git remote add rpardini https://github.com/rpardini/containerd.git && git fetch rpardini
-RUN git -c user.email="ricardo@pardini.net" -c user.name="Ricardo Pardini" cherry-pick 36614f79241cde4e24e6e35dd229c775a791e577
+RUN git -c user.email="ricardo@pardini.net" -c user.name="Ricardo Pardini" cherry-pick dd02af0197233f95fcd49f790de8c44e1fa4075b
 # Build it
 RUN BUILDTAGS=no_btrfs GODEBUG=yes make
 
 # Build nerdctl from source
 FROM build AS nerdctl
 WORKDIR /src
-ARG NERDCTL_VERSION="v2.2.1"
+ARG NERDCTL_VERSION="v2.3.2"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${NERDCTL_VERSION} https://github.com/containerd/nerdctl /src/nerdctl
 WORKDIR /src/nerdctl
 RUN make
@@ -65,7 +65,7 @@ RUN make
 # Build cri-tools from source
 FROM build AS cri-tools
 WORKDIR /src
-ARG CRI_TOOLS_VERSION="v1.34.0"
+ARG CRI_TOOLS_VERSION="v1.36.0"
 RUN git -c advice.detachedHead=false clone --depth=1  --single-branch --branch=${CRI_TOOLS_VERSION} https://github.com/kubernetes-sigs/cri-tools /src/cri-tools
 WORKDIR /src/cri-tools
 RUN make
